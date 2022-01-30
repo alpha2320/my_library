@@ -3,30 +3,29 @@ if(process.env.NODE_ENV !== 'production'){
 }
 
 
-import express, { static } from 'express';
+const express = require('express');
 const app = express();
-import expressLayouts from 'express-ejs-layouts';
+const expressLayouts = require('express-ejs-layouts');
 
-import indexRouter from './routes/index';
-import authorRouter from './routes/authors';
-import { urlencoded } from 'body-parser';
-
+const indexRouter= require('./routes/index')
+const authorRouter = require('./routes/authors')
+const bodyParser = require('body-parser')
 
 app.set('view engine','ejs');
 app.set('views',__dirname + '/views');
 app.set('layout','layouts/layout');
 app.use(expressLayouts);
-app.use(static('public'));
-app.use(urlencoded({ limit: '10mb', extended: false }))
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 
 
 
 
-import { connect, connection } from 'mongoose';
-connect(process.env.DATABASE_URL, {
+const mongoose = require('mongoose')
+mongoose.connect(process.env.DATABASE_URL, {
     useNewUrlParser: true
 })
-const db = connection
+const db = mongoose.connection
 db.on('error', error =>console.error(error))
 db.once('open', () => console.log('connected to mongoose'))
 
